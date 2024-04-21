@@ -26,3 +26,12 @@ pacman -Ss avco
 # Git repos
 
 https://github.com/fsphil/hacktv
+
+# makepkg-mingw command
+
+```
+makepkg-mingw -f
+makepkg-mingw -f -C
+makepkg-mingw -s
+makepkg-mingw --help
+```
