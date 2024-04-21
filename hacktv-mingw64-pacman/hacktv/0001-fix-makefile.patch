@@ -1,0 +1,23 @@
+Fixes warings:
+
+mac.c: In function '_update_udt':
+mac.c:524:9: warning: implicit declaration of function 'localtime_r'; did you mean 'localtime_s'? [-Wimplicit-function-declaration]
+  524 |         localtime_r(&timestamp, &tm);
+      |         ^~~~~~~~~~~
+      |         localtime_s
+mac.c:529:9: warning: implicit declaration of function 'gmtime_r'; did you mean 'gmtime_s'? [-Wimplicit-function-declaration]
+  529 |         gmtime_r(&timestamp, &tm);
+      |         ^~~~~~~~
+      |         gmtime_s
+
+--- a/src/Makefile	2024-04-21 00:31:54.627588000 +0300
++++ b/src/Makefile	2024-04-21 00:31:28.971040700 +0300
+@@ -27,7 +27,7 @@
+ 	CFLAGS += -DHAVE_FL2K
+ endif
+ 
+-CFLAGS  += $(shell $(PKGCONF) --cflags $(PKGS))
++CFLAGS  += $(shell $(PKGCONF) --cflags $(PKGS)) -D_POSIX_C_SOURCE
+ LDFLAGS += $(shell $(PKGCONF) --libs $(PKGS))
+ 
+ all: hacktv

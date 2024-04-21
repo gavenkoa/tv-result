@@ -1,0 +1,62 @@
+# Maintainer: Your Name <youremail@domain.com>
+
+_realname=osmo-fl2k
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=0.2.0
+pkgrel=1
+pkgdesc="Software to turn USB 3.0 VGA adapters into a SDR transmitter"
+arch=('any')
+mingw_arch=('mingw64')
+url="https://gitea.osmocom.org/sdr/osmo-fl2k"
+license=('GPL')
+groups=()
+# mingw-w64-x86_64
+depends=(
+  "${MINGW_PACKAGE_PREFIX}-libwinpthread-git"
+  "${MINGW_PACKAGE_PREFIX}-libusb")
+# makepkg-mingw -s -f
+makedepends=(
+  "${MINGW_PACKAGE_PREFIX}-cmake"
+  "${MINGW_PACKAGE_PREFIX}-libusb"
+  "${MINGW_PACKAGE_PREFIX}-cc"
+  "${MINGW_PACKAGE_PREFIX}-make")
+provides=("${pkgname}")
+conflicts=("${pkgname}")
+replaces=()
+backup=()
+options=()
+install=
+source=(
+  "https://gitea.osmocom.org/sdr/osmo-fl2k/archive/v${pkgver}.tar.gz"
+  "0001-fix-pkgconfig.patch"
+)
+noextract=()
+# makepkg-mingw -g
+sha256sums=('eaeb3b5c5eaa1ae79d602e2f604fd114ae84cd0e89d0599f60013d17a086e424'
+            'bd5d248a64c2a92d11f6ea879b7ac66ff1391e7887db49da58122a06458abe6a')
+
+prepare() {
+  cd "${srcdir}/${_realname}"
+
+  patch -p1 -i ${srcdir}/0001-fix-pkgconfig.patch
+}
+
+# makepkg-mingw -f -C
+build() {
+  mkdir -p "${srcdir}/build-${MSYSTEM}" && cd "${srcdir}/build-${MSYSTEM}"
+  MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
+    ${MINGW_PREFIX}/bin/cmake \
+      -GNinja \
+      -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+      -DLIBUSB_INCLUDE_DIR=${MINGW_PREFIX}/include/libusb-1.0 \
+      -DLIBUSB_LIBRARIES=${MINGW_PREFIX}/lib/libusb-1.0.a \
+      ../${_realname}/
+
+  ${MINGW_PREFIX}/bin/cmake --build .
+}
+
+# pacman -U ./mingw-w64-x86_64-osmo-fl2k-0.2.0-1-any.pkg.tar.zst
+package() {
+  cd "${srcdir}/build-${MSYSTEM}"
+  DESTDIR=${pkgdir} ${MINGW_PREFIX}/bin/cmake --install .
+}

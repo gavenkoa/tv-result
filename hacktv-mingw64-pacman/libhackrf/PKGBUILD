@@ -1,0 +1,70 @@
+# Maintainer: Your Name <youremail@domain.com>
+
+_realname=hackrf
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=2023.01.1
+pkgrel=1
+pkgdesc="HackRF"
+arch=('any')
+mingw_arch=('mingw64')
+url="https://github.com/greatscottgadgets/hackrf"
+license=('GPL')
+groups=()
+# mingw-w64-x86_64
+depends=(
+  "${MINGW_PACKAGE_PREFIX}-libwinpthread-git"
+  "${MINGW_PACKAGE_PREFIX}-libusb")
+# makepkg-mingw -s -f
+makedepends=(
+  "${MINGW_PACKAGE_PREFIX}-cmake"
+  "${MINGW_PACKAGE_PREFIX}-libusb"
+  "${MINGW_PACKAGE_PREFIX}-cc"
+  "${MINGW_PACKAGE_PREFIX}-make")
+provides=("${pkgname}")
+conflicts=("${pkgname}")
+replaces=()
+backup=()
+options=()
+install=
+source=(
+  "https://github.com/greatscottgadgets/hackrf/releases/download/v${pkgver}/${_realname}-${pkgver}.tar.xz"
+  "0001-fix-lib-dir-location.patch")
+noextract=()
+md5sums=('3f681b74fd1629c859a08b1946453fcd'
+         '2d2ec555a7fd4cc1aaa10bfacac53c64')
+
+#      -DCMAKE_INSTALL_LIBPREFIX=${MINGW_PREFIX}/lib \
+#      -DCMAKE_C_COMPILER=${MINGW_PREFIX}/bin/gcc.exe \
+
+prepare() {
+  cd "${srcdir}/${_realname}-${pkgver}"
+
+  patch -p1 -i ${srcdir}/0001-fix-lib-dir-location.patch
+}
+
+# makepkg-mingw -f -C
+# -G 'MinGW Makefiles' -S .. -B . --debug-output
+build() {
+  mkdir -p "${srcdir}/build-${MSYSTEM}" && cd "${srcdir}/build-${MSYSTEM}"
+  MSYS2_ARG_CONV_EXCL="-DCMAKE_INSTALL_PREFIX=" \
+    ${MINGW_PREFIX}/bin/cmake \
+      -GNinja \
+      -DCMAKE_INSTALL_PREFIX=${MINGW_PREFIX} \
+      -DLIBUSB_INCLUDE_DIR=${MINGW_PREFIX}/include/libusb-1.0 \
+      -DLIBUSB_LIBRARIES=${MINGW_PREFIX}/lib/libusb-1.0.a \
+      ../${_realname}-${pkgver}/host/libhackrf
+
+  ${MINGW_PREFIX}/bin/cmake --build .
+
+  # ${MINGW_PREFIX}/bin/mingw32-make
+  # ./configure --prefix=/usr
+  # make
+}
+
+# pacman -U ./mingw-w64-x86_64-hackrf-2023.01.1-1-any.pkg.tar.zst
+package() {
+  cd "${srcdir}/build-${MSYSTEM}"
+  DESTDIR=${pkgdir} ${MINGW_PREFIX}/bin/cmake --install .
+  # ${MINGW_PREFIX}/bin/cmake --install . --prefix "${pkgdir}"
+  # make DESTDIR="$pkgdir/" install
+}

@@ -1,0 +1,64 @@
+# Maintainer: Your Name <youremail@domain.com>
+
+_realname=ffmpeg
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=7.0
+pkgrel=1
+pkgdesc="FFmpeg is a collection of libraries and tools to process multimedia content such as audio, video, subtitles and related metadata."
+arch=('any')
+mingw_arch=('mingw64')
+url="https://github.com/FFmpeg/FFmpeg.git"
+license=('GPL')
+groups=()
+# mingw-w64-x86_64
+depends=()
+# makepkg-mingw -s -f
+makedepends=(
+  "${MINGW_PACKAGE_PREFIX}-cc"
+  "${MINGW_PACKAGE_PREFIX}-autotools"
+  "${MINGW_PACKAGE_PREFIX}-yasm"
+  "${MINGW_PACKAGE_PREFIX}-opus"
+  "${MINGW_PACKAGE_PREFIX}-make")
+provides=("${pkgname}")
+conflicts=("${pkgname}")
+replaces=()
+backup=()
+options=()
+install=
+source=("https://github.com/FFmpeg/FFmpeg/archive/refs/tags/n${pkgver}.tar.gz")
+noextract=()
+# makepkg-mingw -g
+sha256sums=('a68fbc06a645cc93e5c877adbaa592cffc40e8595ba50eb716807c4a35bf0f03')
+
+# prepare() {
+#   cd "${srcdir}/${_realname}-${pkgver}"
+
+#   ./autogen.sh
+# }
+
+# makepkg-mingw -f -C
+build() {
+  mkdir -p "${srcdir}/build-${MSYSTEM}" && cd "${srcdir}/build-${MSYSTEM}"
+
+  # x86_64-w64-mingw32-pkg-config
+  # 	--pkg-config=pkg-config \
+
+
+  HOST=x86_64-w64-mingw32
+  ../"${_realname}-n${pkgver}"/configure \
+    --enable-gpl --enable-nonfree --enable-libfdk-aac --enable-libopus \
+	--enable-static --disable-shared --disable-programs \
+	--disable-outdevs --disable-encoders \
+    --prefix="${MINGW_PREFIX}" \
+	--arch=x86_64 --target-os=mingw64 --cross-prefix=$HOST-
+
+  make -j4
+}
+
+
+# pacman -U ./mingw-w64-x86_64-ffmpeg-7.0-1-any.pkg.tar.zst
+package() {
+  cd "${srcdir}/build-${MSYSTEM}"
+
+  make install DESTDIR="${pkgdir}"
+}

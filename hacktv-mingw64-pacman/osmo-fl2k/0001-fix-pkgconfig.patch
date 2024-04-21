@@ -1,0 +1,11 @@
+
+
+--- a/libosmo-fl2k.pc.in	2023-11-03 12:16:55.000000000 +0200
++++ b/libosmo-fl2k.pc.in	2024-04-21 01:00:30.742427700 +0300
+@@ -7,5 +7,5 @@
+ Description: C Utility Library
+ Version: @VERSION@
+ Cflags: -I${includedir}/ @FL2K_PC_CFLAGS@
+-Libs: -L${libdir} -losmo-fl2k -lusb-1.0
++Libs: -L${libdir} -losmo-fl2k_static -lusb-1.0
+ Libs.private: @FL2K_PC_LIBS@

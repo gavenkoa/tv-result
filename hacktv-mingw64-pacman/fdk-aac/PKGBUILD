@@ -1,0 +1,57 @@
+# Maintainer: Your Name <youremail@domain.com>
+
+_realname=fdk-aac
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=2.0.3
+pkgrel=1
+pkgdesc="A standalone library of the Fraunhofer FDK AAC code from Android."
+arch=('any')
+mingw_arch=('mingw64')
+url="https://github.com/mstorsjo/fdk-aac"
+license=('GPL')
+groups=()
+# mingw-w64-x86_64
+depends=()
+# makepkg-mingw -s -f
+makedepends=(
+  "${MINGW_PACKAGE_PREFIX}-cc"
+  "${MINGW_PACKAGE_PREFIX}-autotools"
+  "${MINGW_PACKAGE_PREFIX}-make")
+provides=("${pkgname}")
+conflicts=("${pkgname}")
+replaces=()
+backup=()
+options=()
+install=
+source=("https://github.com/mstorsjo/fdk-aac/archive/refs/tags/v${pkgver}.tar.gz")
+noextract=()
+# makepkg-mingw -g
+sha256sums=('e25671cd96b10bad896aa42ab91a695a9e573395262baed4e4a2ff178d6a3a78')
+
+prepare() {
+  cd "${srcdir}/${_realname}-${pkgver}"
+
+  ./autogen.sh
+}
+
+# makepkg-mingw -f -C
+build() {
+  mkdir -p "${srcdir}/build-${MSYSTEM}" && cd "${srcdir}/build-${MSYSTEM}"
+
+  ../"${_realname}-${pkgver}"/configure \
+    --prefix="${MINGW_PREFIX}" \
+    --build="${MINGW_CHOST}" \
+    --host="${MINGW_CHOST}" \
+    --target="${MINGW_CHOST}" \
+    --enable-static \
+    --disable-shared
+
+  make -j4
+}
+
+# pacman -U ./mingw-w64-x86_64-fdk-aac-2.0.3-1-any.pkg.tar.zst
+package() {
+  cd "${srcdir}/build-${MSYSTEM}"
+
+  make install DESTDIR="${pkgdir}"
+}

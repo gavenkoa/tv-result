@@ -1,0 +1,62 @@
+# Maintainer: Your Name <youremail@domain.com>
+
+_realname=hacktv
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=0.0.0
+pkgrel=1
+pkgdesc="Analogue TV transmitter for the HackRF"
+arch=('any')
+mingw_arch=('mingw64')
+url="https://github.com/fsphil/hacktv"
+license=('GPL')
+groups=()
+# mingw-w64-x86_64
+depends=(
+  "${MINGW_PACKAGE_PREFIX}-libwinpthread-git"
+  "${MINGW_PACKAGE_PREFIX}-libusb")
+# makepkg-mingw -s -f
+makedepends=(
+  "git"
+  "${MINGW_PACKAGE_PREFIX}-cc"
+  "${MINGW_PACKAGE_PREFIX}-make")
+provides=("${pkgname}")
+conflicts=("${pkgname}")
+replaces=()
+backup=()
+options=()
+install=
+_commit=master
+source=(
+  "hacktv::git+https://github.com/fsphil/hacktv.git#commit=${_commit}"
+  "0001-fix-makefile.patch"
+  "0002-workaround-for-tm_gmtoff.patch"
+)
+noextract=()
+# makepkg-mingw -g
+sha256sums=(
+  'SKIP'
+  'bb1565047c539f738f4c1482e22fb676bdd1c1369ca2c429782d052dce204648'
+  '0e02ddd0b2c94e73f306c0a7451a97908e376e59f598c99da057a660e168ae27')
+
+prepare() {
+  cd "${srcdir}/hacktv"
+
+  patch -p1 -i ${srcdir}/0001-fix-makefile.patch
+  patch -p1 -i ${srcdir}/0002-workaround-for-tm_gmtoff.patch
+}
+
+# makepkg-mingw -f -C
+build() {
+  set -x
+  cd "${srcdir}/hacktv/src"
+
+  HOST=x86_64-w64-mingw32
+  make -j4 CROSS_HOST=$HOST- EXTRA_LDFLAGS="-static" EXTRA_PKGS="libusb-1.0"
+}
+
+
+package() {
+  cd "${srcdir}/hacktv/src"
+
+  install -m 777 -D hacktv.exe "${pkgdir}/${MINGW_PREFIX}/bin/hacktv.exe"
+}

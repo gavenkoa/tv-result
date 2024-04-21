@@ -1,0 +1,19 @@
+Workaround for:
+
+mac.c: In function '_update_udt':
+mac.c:525:15: error: 'struct tm' has no member named 'tm_gmtoff'
+  525 |         i = tm.tm_gmtoff / 1800;
+      |               ^
+
+--- a/src/mac.c	2024-04-21 00:38:47.496515000 +0300
++++ b/src/mac.c	2024-04-21 00:51:11.337591800 +0300
+@@ -522,7 +522,8 @@
+ 	
+ 	/* Get the timezone offset */
+ 	localtime_r(&timestamp, &tm);
+-	i = tm.tm_gmtoff / 1800;
++	/* i = tm.tm_gmtoff / 1800; */
++	i = 0;
+ 	if(i < 0) i = -i | (1 << 5);
+ 	
+ 	/* Calculate Modified Julian Date */
