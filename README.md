@@ -14,3 +14,6 @@ Install sox + ImageMagic + ffmpeg and run:
 
 ![screenshot](gnu-radio-demo.jpg)
 
+# Building / packaging HackTV for Windows Mingw64 / pacman.
+
+See [Mingw64 + pacman README](hacktv-mingw64-pacman/README.md).
