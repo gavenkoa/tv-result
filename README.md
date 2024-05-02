@@ -71,7 +71,14 @@ https://github.com/BatchDrake/SigDigger
 # Free DSL learning resources
 
 https://greatscottgadgets.com/sdr/
-  Software Defined Radio with HackRF.
+:   Software Defined Radio with HackRF.
+
+https://pysdr.org/
+:   PySDR: A Guide to SDR and DSP using Python.
+
+https://www.youtube.com/playlist?list=PLBfTSoOqoRnOTBTLahXBlxaDUNWdZ3FdS
+:   ECE4305 Software Defined Radio Systems and Analysis.
+
 https://www.analog.com/en/resources/technical-books/software-defined-radio-for-engineers.html
   Software-Defined Radio for Engineers, 2018
 https://github.com/sdrforengineers/
@@ -87,8 +94,17 @@ https://www.dspguide.com/
 https://www.analog.com/en/resources/technical-books/scientist_engineers_guide.html
   The Scientist & Engineer's Guide to Digital Signal Processing, 1999
 
+https://wiki.gnuradio.org/index.php?title=SuggestedReading
+:   Suggested Reading.
+
+https://www.youtube.com/playlist?list=PLywxmTaHNUNyKmgF70q8q3QHYIw_LFbrX
+:   Learn SDR with Prof Jason.
+
 https://www.youtube.com/@w2aew
 :   #170, #171 are about IQ coding
+
+https://www.youtube.com/watch?v=h_7d-m1ehoY
+:   #170: Basics of IQ Signals and IQ modulation & demodulation - A tutorial
 
 https://www.youtube.com/watch?v=5GGD99Qi1PA
 :   #171: IQ Signals Part II: AM and FM phasor diagrams, SSB phasing method
@@ -100,6 +116,9 @@ https://github.com/fsphil/hacktv
 :   Analogue TV transmitter for the HackRF.
 https://github.com/captainjack64/hacktv
 :   Fork with some improvements.
+
+https://github.com/argilo/sdr-examples/blob/master/ntsc/ntsc-encode.py
+:   Analogue NTSC encoding.
 
 hacktv.exe -f 591250000 -g 30 -m pal-k -s 9700000 -r ua-10s.mp4
 hacktv.exe -m pal-k -s 7000000 ua-10s.mp4 -t float -o file:ua-10s-7mhz.cf32
@@ -169,6 +188,10 @@ https://en.wikipedia.org/wiki/Linear_time-invariant_system
 # Stereo FM audio encoding
 
 https://transmitters.tripod.com/stereo.htm
+
+https://web.archive.org/web/20111223010330/http://cliftonlaboratories.com/fm_%26_tv_subcarriers.htm
+:   FM Broadcast and TV Broadcast Aural Subcarriers
+
 
 https://github.com/f4exb/ngsoftfm
 :   Rewrite of SoftFM
